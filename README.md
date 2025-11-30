@@ -203,6 +203,18 @@ exit
 - ログを確認: `docker-compose logs app`
 - コンテナを再起動: `docker-compose restart app`
 
+### 問題5: `Table 'attendance_db.sessions' doesn't exist` エラーが表示される
+
+**原因**: `.env`ファイルで`SESSION_DRIVER=database`が設定されているが、`sessions`テーブルが作成されていないためです。
+
+**解決方法**:
+- `.env`ファイルで`SESSION_DRIVER=file`に設定されていることを確認してください（`.env.example`からコピーした場合は既に`file`になっています）
+- もし`SESSION_DRIVER=database`になっている場合は、`SESSION_DRIVER=file`に変更してください
+- 変更後、設定キャッシュをクリア: `docker-compose exec app php artisan config:clear`
+- アプリケーションを再起動: `docker-compose restart app`
+
+**注意**: 開発環境では`SESSION_DRIVER=file`を使用することを推奨します。本番環境でデータベースセッションを使用する場合は、`php artisan session:table`でマイグレーションを作成し、`php artisan migrate`を実行してください。
+
 ## 便利なコマンド一覧
 
 ### コンテナの操作
