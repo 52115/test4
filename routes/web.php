@@ -22,7 +22,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // メール認証
 Route::get('/email/verify', [EmailVerificationController::class, 'show'])->middleware('auth')->name('verification.notice');
 Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend'])->middleware('auth')->name('verification.send');
-Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth')->name('verification.verify');
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->name('verification.verify');
 
 // 勤怠関連（認証必須）
 Route::middleware(['auth', 'verified'])->group(function () {

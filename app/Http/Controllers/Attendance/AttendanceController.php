@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\UpdateAttendanceRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceModificationRequest;
+use App\Models\BreakModification;
 use App\Models\BreakTime as BreakModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,9 +45,16 @@ class AttendanceController extends Controller
         return view('attendance.list', compact('attendances', 'year', 'month', 'prevYear', 'prevMonth', 'nextYear', 'nextMonth'));
     }
 
-    public function detail(int $id): View
+    public function detail(Request $request, int $id): View
     {
         $user = Auth::user();
+        
+        // 勤怠登録がされていない日付の場合
+        if ($id === 0 && $request->has('date')) {
+            $date = $request->get('date');
+            return view('attendance.not_found', compact('date'));
+        }
+        
         $attendance = Attendance::with(['breaks', 'modificationRequests'])
             ->where('id', $id)
             ->where('user_id', $user->id)
@@ -71,7 +79,7 @@ class AttendanceController extends Controller
             ->exists();
 
         if ($hasPendingRequest) {
-            return back()->with('error', '承認待ちのため修正はできません。');
+            return back();
         }
 
         $modificationRequest = AttendanceModificationRequest::create([
@@ -88,7 +96,7 @@ class AttendanceController extends Controller
 
         foreach ($breakStarts as $index => $breakStart) {
             if ($breakStart && isset($breakEnds[$index]) && $breakEnds[$index]) {
-                \App\Models\BreakModification::create([
+                BreakModification::create([
                     'attendance_modification_request_id' => $modificationRequest->id,
                     'requested_break_start' => now()->setTimeFromTimeString($breakStart),
                     'requested_break_end' => now()->setTimeFromTimeString($breakEnds[$index]),
@@ -96,7 +104,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return redirect('/attendance/list')->with('success', '修正申請を送信しました');
+        return redirect('/attendance/list');
     }
 }
 

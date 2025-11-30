@@ -23,6 +23,13 @@ class LoginController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            $user = Auth::user();
+            
+            // メール認証が完了していない場合は、メール認証誘導画面にリダイレクト
+            if (!$user->hasVerifiedEmail()) {
+                return redirect('/email/verify');
+            }
+
             return redirect()->intended('/attendance');
         }
 

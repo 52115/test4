@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Attendance;
 use App\Models\AttendanceModificationRequest;
 use App\Models\BreakTime as BreakModel;
 use App\Models\BreakModification;
@@ -31,7 +30,7 @@ class StampCorrectionRequestController extends Controller
         ])->findOrFail($id);
 
         if ($modificationRequest->status !== 'pending') {
-            return back()->with('error', 'この申請は既に処理されています');
+            return back();
         }
 
         $attendance = $modificationRequest->attendance;
@@ -58,8 +57,8 @@ class StampCorrectionRequestController extends Controller
             'approved_at' => now(),
         ]);
 
-        return redirect('/stamp_correction_request/list?status=approved')
-            ->with('success', '承認しました');
+        // 同じ画面に戻る（画面遷移なし）
+        return redirect('/admin/stamp_correction_request/approve/' . $id);
     }
 }
 

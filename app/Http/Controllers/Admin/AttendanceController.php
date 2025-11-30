@@ -48,7 +48,7 @@ class AttendanceController extends Controller
             ->exists();
 
         if ($hasPendingRequest) {
-            return back()->with('error', '承認待ちのため修正はできません。');
+            return back();
         }
 
         $attendance->update([
@@ -72,7 +72,7 @@ class AttendanceController extends Controller
             }
         }
 
-        return redirect('/admin/attendance/list')->with('success', '修正しました');
+        return redirect('/admin/attendance/list');
     }
 }
 

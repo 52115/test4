@@ -38,7 +38,7 @@ class ClockController extends Controller
             ->first();
 
         if ($attendance && $attendance->clock_in) {
-            return back()->with('error', '本日は既に出勤しています');
+            return back();
         }
 
         if (!$attendance) {
@@ -55,7 +55,7 @@ class ClockController extends Controller
             ]);
         }
 
-        return redirect('/attendance')->with('success', '出勤しました');
+        return redirect('/attendance');
     }
 
     public function breakStart(): RedirectResponse
@@ -69,7 +69,7 @@ class ClockController extends Controller
             ->first();
 
         if (!$attendance) {
-            return back()->with('error', '出勤していません');
+            return back();
         }
 
         $attendance->update(['status' => 'on_break']);
@@ -79,7 +79,7 @@ class ClockController extends Controller
             'break_start' => now(),
         ]);
 
-        return redirect('/attendance')->with('success', '休憩を開始しました');
+        return redirect('/attendance');
     }
 
     public function breakEnd(): RedirectResponse
@@ -93,7 +93,7 @@ class ClockController extends Controller
             ->first();
 
         if (!$attendance) {
-            return back()->with('error', '休憩中ではありません');
+            return back();
         }
 
         $attendance->update(['status' => 'working']);
@@ -107,7 +107,7 @@ class ClockController extends Controller
             $break->update(['break_end' => now()]);
         }
 
-        return redirect('/attendance')->with('success', '休憩を終了しました');
+        return redirect('/attendance');
     }
 
     public function clockOut(): RedirectResponse
@@ -121,7 +121,7 @@ class ClockController extends Controller
             ->first();
 
         if (!$attendance) {
-            return back()->with('error', '出勤していません');
+            return back();
         }
 
         if ($attendance->status === 'on_break') {
@@ -140,7 +140,7 @@ class ClockController extends Controller
             'status' => 'clocked_out',
         ]);
 
-        return redirect('/attendance')->with('message', 'お疲れ様でした。');
+        return redirect('/attendance');
     }
 }
 

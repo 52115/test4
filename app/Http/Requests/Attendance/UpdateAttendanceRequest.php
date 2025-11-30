@@ -51,16 +51,24 @@ class UpdateAttendanceRequest extends FormRequest
             foreach ($breakStarts as $index => $breakStart) {
                 $breakEnd = $breakEnds[$index] ?? null;
                 
+                // 休憩開始時間が出勤時間より前の場合
                 if ($breakStart && $clockIn && $breakStart < $clockIn) {
                     $validator->errors()->add('break_start.' . $index, '休憩時間が不適切な値です');
                 }
                 
+                // 休憩開始時間が退勤時間より後の場合
                 if ($breakStart && $clockOut && $breakStart > $clockOut) {
                     $validator->errors()->add('break_start.' . $index, '休憩時間が不適切な値です');
                 }
                 
+                // 休憩終了時間が退勤時間より後の場合
                 if ($breakEnd && $clockOut && $breakEnd > $clockOut) {
                     $validator->errors()->add('break_end.' . $index, '休憩時間もしくは退勤時間が不適切な値です');
+                }
+                
+                // 休憩終了時間が休憩開始時間より前の場合
+                if ($breakStart && $breakEnd && $breakEnd <= $breakStart) {
+                    $validator->errors()->add('break_end.' . $index, '休憩時間が不適切な値です');
                 }
             }
         });

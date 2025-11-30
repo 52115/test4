@@ -24,7 +24,7 @@ class EmailVerificationController extends Controller
 
         Mail::to($request->user())->send(new VerifyEmail($request->user()));
 
-        return back()->with('status', '認証メールを再送信しました');
+        return back();
     }
 
     public function verify(Request $request, int $id, string $hash): RedirectResponse
@@ -32,16 +32,21 @@ class EmailVerificationController extends Controller
         $user = \App\Models\User::findOrFail($id);
 
         if ($user->hasVerifiedEmail()) {
-            return redirect('/attendance');
+            return redirect('/login');
         }
 
         if (sha1($user->email) === $hash) {
             if ($user->markEmailAsVerified()) {
                 event(new \Illuminate\Auth\Events\Verified($user));
             }
+            
+            // メールアドレスをセッションに保存して、ログインページで自動入力できるようにする
+            $request->session()->put('verified_email', $user->email);
+            
+            return redirect('/login');
         }
 
-        return redirect('/attendance');
+        return redirect('/login');
     }
 }
 

@@ -108,10 +108,10 @@ body {
 
 /* フォーム */
 .form-container {
-    max-width: 500px;
+    max-width: 700px;
     margin: 0 auto;
     padding: 2rem;
-    background-color: #ffffff;
+    background-color: #F5F5F5;
     border-radius: 8px;
 }
 
@@ -180,6 +180,7 @@ body {
     border-radius: 8px;
     overflow: hidden;
     margin-top: 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .table {
@@ -197,9 +198,24 @@ body {
 .table th {
     background-color: #F5F5F5;
     font-weight: 600;
+    color: #333;
+    border-bottom: 3px solid #E5E5E5;
+}
+
+.table td {
+    background-color: #ffffff;
+    color: #333;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
 }
 
 .table tr:hover {
+    background-color: #F9F9F9;
+}
+
+.table tr:hover td {
     background-color: #F9F9F9;
 }
 
@@ -249,25 +265,30 @@ body {
 /* 月次ナビゲーション */
 .month-nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 2rem;
     margin-bottom: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .month-nav a {
     color: #333;
     text-decoration: none;
     font-size: 1rem;
+    transition: opacity 0.3s;
 }
 
 .month-nav a:hover {
-    text-decoration: underline;
+    opacity: 0.7;
 }
 
 .month-display {
     font-size: 1.25rem;
     font-weight: 500;
+    color: #333;
 }
 
 /* タブ */
@@ -303,6 +324,24 @@ body {
     padding: 0.5rem;
     border: 1px solid #000000;
     border-radius: 4px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.time-input input[type="time"] {
+    text-align: center;
+    font-size: 1rem;
+}
+
+.time-input input[type="time"]::-webkit-datetime-edit {
+    text-align: center;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.time-input input[type="time"]::-webkit-datetime-edit-fields-wrapper {
+    text-align: center;
+    font-size: 1rem;
 }
 
 /* レスポンシブ対応 */

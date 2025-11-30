@@ -248,7 +248,8 @@ class AttendanceControllerTest extends TestCase
             'remarks' => 'Test remarks',
         ]);
         
-        $response->assertSessionHasErrors();
+        $response->assertSessionHasErrors(['clock_in']);
+        $response->assertSessionHasErrors(['clock_in' => '出勤時間もしくは退勤時間が不適切な値です']);
     }
 
     /**

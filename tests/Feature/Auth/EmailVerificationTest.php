@@ -36,9 +36,9 @@ class EmailVerificationTest extends TestCase
     }
 
     /**
-     * テスト16-2: メール認証誘導画面で「認証メール再送」ボタンが表示される
+     * テスト16-2: メール認証誘導画面で「認証はこちらから」ボタンを押下するとメール認証サイトに遷移する
      */
-    public function test_email_verification_notice_page(): void
+    public function test_email_verification_notice_page_redirects_to_mailtrap(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
@@ -50,19 +50,19 @@ class EmailVerificationTest extends TestCase
         
         $response->assertStatus(200);
         $response->assertViewIs('auth.verify-email');
-        $response->assertSee('認証メール再送');
+        // 「認証はこちらから」ボタンがhttp://localhost:8025にリンクしていることを確認
+        $response->assertSee('認証はこちらから');
+        $response->assertSee('http://localhost:8025');
     }
 
     /**
-     * テスト16-3: メール認証サイトのメール認証を完了すると、勤怠登録画面に遷移する
+     * テスト16-3: メール認証サイトのメール認証を完了すると、ログイン画面に遷移する
      */
-    public function test_email_verification_completion(): void
+    public function test_email_verification_completion_redirects_to_login(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
-        
-        $this->actingAs($user);
         
         Event::fake();
         
@@ -77,7 +77,8 @@ class EmailVerificationTest extends TestCase
         $user->refresh();
         $this->assertNotNull($user->email_verified_at);
         
-        $response->assertRedirect('/attendance');
+        // メール認証完了後、ログイン画面にリダイレクトされる
+        $response->assertRedirect('/login');
     }
 }
 

@@ -26,7 +26,17 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
 
-            Route::middleware(['web', 'admin'])
+            // 管理者ログイン（認証不要）
+            Route::middleware('web')
+                ->prefix('admin')
+                ->group(function () {
+                    Route::get('/login', [\App\Http\Controllers\Admin\Auth\LoginController::class, 'showLoginForm'])->name('admin.login');
+                    Route::post('/login', [\App\Http\Controllers\Admin\Auth\LoginController::class, 'login']);
+                    Route::post('/logout', [\App\Http\Controllers\Admin\Auth\LoginController::class, 'logout'])->name('admin.logout');
+                });
+
+            // 管理者機能（認証必須）
+            Route::middleware(['web', 'auth', 'admin'])
                 ->prefix('admin')
                 ->group(base_path('routes/admin.php'));
         });

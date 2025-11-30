@@ -11,7 +11,7 @@
     @auth
     <header class="header">
         <a href="/attendance" class="header-logo">
-            <img src="{{ asset('logo.png') }}" alt="CT COACHTECH" style="height: 40px; width: auto;">
+            <img src="{{ asset('logo.png') }}" alt="CT COACHTECH" style="height: 30px; width: auto;">
         </a>
         <nav class="header-nav">
             <a href="/attendance">勤怠</a>
@@ -26,18 +26,6 @@
     @endauth
 
     <main class="main-content">
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-error">{{ session('error') }}</div>
-        @endif
-
-        @if(session('message'))
-            <div class="alert alert-success">{{ session('message') }}</div>
-        @endif
-
         @yield('content')
     </main>
 

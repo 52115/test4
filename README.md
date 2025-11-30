@@ -109,9 +109,42 @@ docker-compose exec app php artisan migrate
 
 **説明**: このコマンドで、users、attendances、breaksなどのテーブルが作成されます。
 
-### ステップ10: 管理者ユーザーの作成（オプション）
+### ステップ10: ダミーデータの作成
 
-データベースに直接管理者ユーザーを作成する場合：
+管理者ユーザー、一般ユーザー、および勤怠記録のダミーデータを作成します：
+
+```bash
+docker-compose exec app php artisan db:seed
+```
+
+**説明**: このコマンドで、以下のデータが作成されます：
+- **管理者ユーザー**: 1人（メール認証済み）
+- **一般ユーザー**: 5人（メール認証済み）
+- **勤怠記録**: 過去30日間の勤怠データ（出勤・退勤・休憩時間を含む）
+
+**注意**: 既にデータが存在する場合は、重複して作成される可能性があります。データをクリアしてから実行する場合は、以下のコマンドを実行してください：
+
+```bash
+docker-compose exec app php artisan migrate:fresh --seed
+```
+
+**警告**: `migrate:fresh`は既存のデータベースを削除して再作成するため、既存のデータは全て削除されます。
+
+### ステップ11: ログイン情報
+
+ダミーデータ作成後、以下のログイン情報でログインできます：
+
+#### 管理者ユーザー
+- **メールアドレス**: `admin@example.com`
+- **パスワード**: `password123`
+- **ログインURL**: http://localhost:8000/admin/login
+
+#### 一般ユーザー
+- **メールアドレス**: シーダーで自動生成されたメールアドレス（例: `user1@example.com`, `user2@example.com` など）
+- **パスワード**: `password`
+- **ログインURL**: http://localhost:8000/login
+
+**注意**: 一般ユーザーのメールアドレスを確認するには、以下のコマンドを実行してください：
 
 ```bash
 docker-compose exec app php artisan tinker
@@ -120,17 +153,11 @@ docker-compose exec app php artisan tinker
 tinkerが起動したら、以下のコマンドを実行：
 
 ```php
-$user = new App\Models\User();
-$user->name = '管理者';
-$user->email = 'admin@example.com';
-$user->password = bcrypt('password123');
-$user->role = 'admin';
-$user->email_verified_at = now();
-$user->save();
+App\Models\User::where('role', 'user')->get(['name', 'email']);
 exit
 ```
 
-### ステップ11: アプリケーションへのアクセス
+### ステップ12: アプリケーションへのアクセス
 
 ブラウザで以下のURLにアクセスします：
 
@@ -139,7 +166,7 @@ exit
 
 **注意**: ポート8000が使用できない場合は、`docker-compose.yml`でポート番号を変更するか、別のポートを使用してください。
 
-### ステップ12: Mailtrap（メール確認）へのアクセス
+### ステップ13: Mailtrap（メール確認）へのアクセス
 
 開発環境で送信されたメールを確認するには：
 
